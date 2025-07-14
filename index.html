@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>注文フォーム</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      background-color: #f8f8f8;
+    }
+.container {
+    width: auto;
+    height: 500px;
+    border: 1px;
+}
+
+    h2 {
+      text-align: center;
+    }
+    label, input, select, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #response {
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+  <h2>職員室用 注文フォーム</h2>
+
+  <label for="username">お名前</label>
+  <input type="text" id="username" placeholder="名前を書いてください" required>
+
+  <label for="location">届け先を選択</label>
+  <select id="location">
+    <option value="職員室">職員室</option>
+    <option value="生徒指導室">生徒指導室</option>
+    <option value="商業センター">商業センター</option>
+    <option value="進路指導室">進路指導室</option>
+  </select>
+
+  <label for="item">商品を選択</label>
+  <select id="item">
+    <option value="お茶">お茶</option>
+    <option value="コーヒー">コーヒー</option>
+    <option value="ジュース">ジュース</option>
+    <option value="クッキー">クッキー</option>
+    <option value="チョコ">チョコ</option>
+  </select>
+
+  <label for="quantity">数量</label>
+  <input type="number" id="quantity" value="1" min="1">
+
+  <button onclick="submitOrder()">注文する</button>
+
+  <p id="response"></p>
+</div>
+  <script>
+    function submitOrder() {
+      const username = document.getElementById("username").value;
+      const location = document.getElementById("location").value;
+      const item = document.getElementById("item").value;
+      const quantity = document.getElementById("quantity").value;
+
+      if (!username || quantity <= 0) {
+        document.getElementById("response").textContent = "⚠ 名前と数量を正しく入力してください。";
+        return;
+      }
+
+      const orderData = {
+        username: username,
+        location: location,
+        item: item,
+        quantity: quantity
+      };
+
+      fetch("【GASのURL】", {
+        method: "POST",
+        body: JSON.stringify(orderData),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.text())
+      .then(msg => {
+        document.getElementById("response").textContent = "✅ " + msg;
+        document.getElementById("username").value = "";
+        document.getElementById("quantity").value = 1;
+      })
+      .catch(err => {
+        document.getElementById("response").textContent = "❌ エラーが発生しました：" + err;
+      });
+    }
+  </script>
+</body>
+</html>
